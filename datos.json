@@ -1,0 +1,35 @@
+{
+	"R":{
+		"T":["a","b","c","d","e","f","g"], 
+		"L":[
+				{"impX":"a", "impY":"b"},
+				{"impX":"a", "impY":"d"},
+				{"impX":"b", "impY":"c"},
+				{"impX":"b", "impY":"d"},
+				{"impX":"a,c", "impY":"e"},
+				{"impX":"c", "impY":"a"},
+				{"impX":"f,b", "impY":"d"}
+			]
+	},
+	"Lx":[
+		{"impX":"a", "impY":"b"},
+		{"impX":"b", "impY":"c"},
+		{"impX":"c", "impY":"e"},
+		{"impX":"c", "impY":"a"},
+		{"impX":"b", "impY":"d"}
+	],
+	"Lx2":[
+		{"impX":"a", "impY":"b"},
+		{"impX":"b", "impY":"c"},
+		{"impX":"a", "impY":"e"},
+		{"impX":"c", "impY":"a"},
+		{"impX":"a", "impY":"d"}
+	],
+	"Lx3":[
+		{"impX":"a", "impY":"b"},
+		{"impX":"b", "impY":"c"},
+		{"impX":"a", "impY":"e"},
+		{"impX":"c", "impY":"a"},
+		{"impX":"b", "impY":"d"}
+	]
+}

@@ -1,0 +1,22 @@
+{
+	"R":{
+		"T":["a","b","c","d","e","f"], 
+		"L":[
+				{"impX":"a,b", "impY":"c"},
+				{"impX":"d", "impY":"e,f"},
+				{"impX":"c", "impY":"a"},
+				{"impX":"b,e", "impY":"c"},
+				{"impX":"b,c", "impY":"d"},
+				{"impX":"c,f", "impY":"b,d"},
+				{"impX":"a,c,d", "impY":"b"},
+				{"impX":"c,e", "impY":"a,f"}
+			]
+	},
+	"Lx":[
+		{"impX":"a", "impY":"b"},
+		{"impX":"b", "impY":"c"},
+		{"impX":"c", "impY":"e"},
+		{"impX":"c", "impY":"a"},
+		{"impX":"b", "impY":"d"}
+	]
+}
