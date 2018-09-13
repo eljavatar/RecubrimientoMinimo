@@ -1,24 +1,40 @@
 {
     "Lx": [
         {
-            "impX": "a",
-            "impY": "b"
-        },
-        {
-            "impX": "b",
+            "impX": "a,b",
             "impY": "c"
         },
         {
-            "impX": "a",
+            "impX": "d",
             "impY": "e"
+        },
+        {
+            "impX": "d",
+            "impY": "f"
+        },
+        {
+            "impX": "b,e",
+            "impY": "c"
+        },
+        {
+            "impX": "b,c",
+            "impY": "d"
+        },
+        {
+            "impX": "c,f",
+            "impY": "d"
+        },
+        {
+            "impX": "c,d",
+            "impY": "b"
         },
         {
             "impX": "c",
             "impY": "a"
         },
         {
-            "impX": "b",
-            "impY": "d"
+            "impX": "c,e",
+            "impY": "f"
         }
     ]
 }

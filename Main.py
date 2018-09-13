@@ -86,9 +86,12 @@ print("Tiempo total: ", (time_option1 + time_option2 + time_option3))
 print()
 
 print("¿Son equivalentes L3 y Lx?: ", reglas.validarConjuntosEquivalentes(l3, r.dfToValidate))
+print()
+
+save_result(l3)
 
 i = time.time()
-reglas.clavesCandidatas(r, l3)
+clavesCandidatas = reglas.clavesCandidatas(r, l3)
 time_option4 = time.time() - i
-print("Calculo finalizado: ", time_option4)
-#save_result(l3)
+print("Claves Candidatas: ", time_option4)
+print(clavesCandidatas)

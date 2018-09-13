@@ -5,6 +5,15 @@ from DF import *
 from R import *
 import threading
 
+
+def matrizSinDuplicados(listMatrices):
+	listFinal = []
+	for m in listMatrices:
+		if m not in listFinal:
+			listFinal.append(m)
+	return listFinal
+
+
 # Funcion para validar si todos los elementos de listB estan en listA
 def containsAll(listA, listB):
 	for b in listB:
@@ -137,7 +146,7 @@ def clavesCandidatas(r, listDFL3):
 	cierreZ = cierreTransitivo(z, listDFL3)
 	
 	print("z = ", z)
-	print(cierreZ)
+	print("z+ = ", cierreZ)
 	if all(atr in cierreZ for atr in r.dataT):
 		return z
 
@@ -153,42 +162,38 @@ def clavesCandidatas(r, listDFL3):
 	z.sort()
 	v.sort()
 
-	m1 = []
+	#m1 = []
 	m2 = []
 
-	metodo(r, listDFL3, z.copy(), v.copy(), m1, m2)
+	algoritmoClavesCandidatas(r, listDFL3, z.copy(), v.copy(), m2)
+	# Eliminamos elementos duplicados
+	m2 = matrizSinDuplicados(m2)
 
-	print("Resultados")
-	#print(m1)
-	#m2 = list(set(m2))
-	print(m2)
-	
+	return m2
 
 
-def metodo(r, listDFL3, z, v, m1, m2):
+
+def algoritmoClavesCandidatas(r, listDFL3, z, v, m2):
 	for pos in v:
 		data = z.copy()
-		#print("Data antes: ", data)
 
-		esta = any(containsAll((data + [pos]), atr) for atr in m2)
+		yaEsta = any(containsAll((data + [pos]), atr) for atr in m2)
 
-		if pos not in z and not esta:
-			#data = z.copy()
+		if pos not in z and not yaEsta:
 			data.append(pos)
-			#print(data)
+			print(data)
 			data.sort()
 			
 			cierrePos = cierreTransitivo(data, listDFL3)
-			#print(cierrePos)
 			
 			if all(atr in cierrePos for atr in r.dataT):
 				m2.append(data)
 				#print("Es Llave candidata")
 			else:
-				t = threading.Thread(target = metodo, args = (r, listDFL3, data, v, m1, m2))
+				t = threading.Thread(target = algoritmoClavesCandidatas, args = (r, listDFL3, data, v, m2))
 				t.start()
 				#m1.append(data)
-				#metodo(r, listDFL3, data, v, m1, m2)
+				#algoritmoClavesCandidatas(r, listDFL3, data, v,  m2)
 				#m1.remove(data)
 	
 
