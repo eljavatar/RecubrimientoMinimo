@@ -9,7 +9,7 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
 
-_DEFAULT_POOL = ThreadPoolExecutor(1)
+_DEFAULT_POOL = ThreadPoolExecutor()
 
 def threadpool(f, executor = None):
     @wraps(f)
@@ -20,28 +20,23 @@ def threadpool(f, executor = None):
     return wrap
 
 
-def matrizSinDuplicados(listMatrices):
+def matrizSinReflexividad(listMatrices):
 	listFinal = listMatrices.copy()
-	listToRemove = []
-	for m in listFinal:
-		for n in listFinal:
-			#print(m, "   ===   ", n, "   Son Distintos? ", (m != n), "   containsAll? ", containsAll(m, n))
+	for m in listFinal.copy():
+		for n in listFinal.copy():
 			if m != n and containsAll(m, n):
-				#listFinal.remove(m)
-				listToRemove.append(m)
-
-	listFinal = [m for m in listFinal if m not in listToRemove]
+				listFinal.remove(m)
 
 	return listFinal
 
-'''
+
 def matrizSinDuplicados(listMatrices):
-	listFinal = []
+	listToReturn = []
 	for m in listMatrices:
-		if m not in listFinal:
-			listFinal.append(m)
-	return listFinal
-'''
+		if m not in listToReturn:
+			listToReturn.append(m)
+	
+	return listToReturn
 
 
 # Funcion para validar si todos los elementos de listB estan en listA
@@ -159,6 +154,9 @@ def validarConjuntosEquivalentes(listDFL3, listDFLx):
 	return True
 
 
+
+
+
 @threadpool
 def clavesCandidatas(r, listDFL3):
 	implicados = []
@@ -192,12 +190,9 @@ def clavesCandidatas(r, listDFL3):
 	z.sort()
 	v.sort()
 
-	#m1 = []
 	m2 = []
 
 	algoritmoClavesCandidatas(r, listDFL3, z.copy(), v.copy(), m2)
-	# Eliminamos elementos duplicados
-	#m2 = matrizSinDuplicados(m2)
 
 	return m2
 
@@ -219,12 +214,84 @@ def algoritmoClavesCandidatas(r, listDFL3, z, v, m2):
 				m2.append(data)
 				#print("Es Llave candidata: ", m2)
 			else:
-				t = threading.Thread(target = algoritmoClavesCandidatas, args = (r, listDFL3, data, v, m2))
-				t.start()
-				#m1.append(data)
+				#t = threading.Thread(target = algoritmoClavesCandidatas, args = (r, listDFL3, data, v, m2))
+				#t.start()
 				algoritmoClavesCandidatas(r, listDFL3, data, v,  m2)
-				#m1.remove(data)
+
+
+
+
+@threadpool
+def algoritmoClavesCandidatas2(r, listDFL3):
+	implicados = []
+	implicantes = []
+	for df in listDFL3:
+		for y in df.implicado:
+			if y not in implicados:
+				implicados.append(y)
+		for x in df.implicante:
+			if x not in implicantes:
+				implicantes.append(x)
+
+	# Conservamos cada impY en t, si no está en la lista de implicados
+	z = [impY for impY in r.dataT if impY not in implicados]
+	cierreZ = cierreTransitivo(z, listDFL3)
+	
+	#print("z = ", z)
+	#print("z+ = ", cierreZ)
+	if all(atr in cierreZ for atr in r.dataT):
+		return z
+
+	# Conservamos cada impX en t, si no está en la lista de implicantes
+	w = [impX for impX in r.dataT if impX not in implicantes]
+	#print("w = ", w)
+
+	zw = z + w
+	# Conservamos cada posible clave en t, si no está en la lista de implicantes e implicados (z + w)
+	v = [posible for posible in r.dataT if posible not in zw]
+	#print("v = ", v)
+
+	z.sort()
+	v.sort()
+
+	m1 = []
+	m2 = []
+
+	if len(z) == 0:
+		z = v.copy()
+
+	for atr in z:
+		m1.append([atr])
+	
+	recorrido(r, listDFL3, v, m1, m2)
+
 	return m2
 
+
+
+def recorrido(r, listDFL3, v, m1, m2):
+	for pos in m1.copy():
+		cierrePos = cierreTransitivo(pos, listDFL3)
+		if all(atr in cierrePos for atr in r.dataT):
+			m2.append(pos)
+			m1.remove(pos)
+
+	#print(m1)
+	if len(m1) > 0:
+		poblarM1(v, m1, m2)
+		recorrido(r, listDFL3, v, m1, m2)
+
+
+def poblarM1(v, m1, m2):
+	for m in m1.copy():
+		data = m
+		for pos in v:
+			yaEsta = any(containsAll((data + [pos]), atr) for atr in m2)
+			if pos not in data and not yaEsta:
+				newData = data + [pos]
+				newData.sort()
+				m1.append(newData)
+				
+		m1.remove(data)
 
 
