@@ -6,6 +6,10 @@ from DF import *
 import Reglas as reglas
 import json
 import time
+from multiprocessing.pool import ThreadPool
+from functools import wraps
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 r = R()
 
@@ -91,7 +95,10 @@ print()
 save_result(l3)
 
 i = time.time()
-clavesCandidatas = reglas.clavesCandidatas(r, l3)
+resultThread = reglas.clavesCandidatas(r, l3)
+clavesCandidatas = resultThread.result()
 time_option4 = time.time() - i
 print("Claves Candidatas: ", time_option4)
-print(clavesCandidatas)
+print("Claves Obtenidas = ", clavesCandidatas)
+clavesCandidatas = reglas.matrizSinDuplicados(clavesCandidatas)
+print("Claves sin Redun = ", clavesCandidatas)

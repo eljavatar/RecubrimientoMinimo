@@ -4,14 +4,46 @@
 from DF import *
 from R import *
 import threading
+from functools import wraps
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
+from multiprocessing.pool import ThreadPool
 
 
+_DEFAULT_POOL = ThreadPoolExecutor(1)
+
+def threadpool(f, executor = None):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+    	return (executor or _DEFAULT_POOL).submit(f, *args, **kwargs)
+        #return asyncio.wrap_future((executor or _DEFAULT_POOL).submit(f, *args, **kwargs))
+
+    return wrap
+
+
+def matrizSinDuplicados(listMatrices):
+	listFinal = listMatrices.copy()
+	listToRemove = []
+	for m in listFinal:
+		for n in listFinal:
+			#print(m, "   ===   ", n, "   Son Distintos? ", (m != n), "   containsAll? ", containsAll(m, n))
+			if m != n and containsAll(m, n):
+				#listFinal.remove(m)
+				listToRemove.append(m)
+
+	listFinal = [m for m in listFinal if m not in listToRemove]
+
+	return listFinal
+
+'''
 def matrizSinDuplicados(listMatrices):
 	listFinal = []
 	for m in listMatrices:
 		if m not in listFinal:
 			listFinal.append(m)
 	return listFinal
+'''
 
 
 # Funcion para validar si todos los elementos de listB estan en listA
@@ -129,7 +161,7 @@ def validarConjuntosEquivalentes(listDFL3, listDFLx):
 	return True
 
 
-
+@threadpool
 def clavesCandidatas(r, listDFL3):
 	implicados = []
 	implicantes = []
@@ -145,19 +177,19 @@ def clavesCandidatas(r, listDFL3):
 	z = [impY for impY in r.dataT if impY not in implicados]
 	cierreZ = cierreTransitivo(z, listDFL3)
 	
-	print("z = ", z)
-	print("z+ = ", cierreZ)
+	#print("z = ", z)
+	#print("z+ = ", cierreZ)
 	if all(atr in cierreZ for atr in r.dataT):
 		return z
 
 	# Conservamos cada impX en t, si no está en la lista de implicantes
 	w = [impX for impX in r.dataT if impX not in implicantes]
-	print("w = ", w)
+	#print("w = ", w)
 
 	zw = z + w
 	# Conservamos cada posible clave en t, si no está en la lista de implicantes e implicados (z + w)
 	v = [posible for posible in r.dataT if posible not in zw]
-	print("v = ", v)
+	#print("v = ", v)
 
 	z.sort()
 	v.sort()
@@ -167,10 +199,9 @@ def clavesCandidatas(r, listDFL3):
 
 	algoritmoClavesCandidatas(r, listDFL3, z.copy(), v.copy(), m2)
 	# Eliminamos elementos duplicados
-	m2 = matrizSinDuplicados(m2)
+	#m2 = matrizSinDuplicados(m2)
 
 	return m2
-
 
 
 def algoritmoClavesCandidatas(r, listDFL3, z, v, m2):
@@ -181,21 +212,21 @@ def algoritmoClavesCandidatas(r, listDFL3, z, v, m2):
 
 		if pos not in z and not yaEsta:
 			data.append(pos)
-			print(data)
+			#print(data)
 			data.sort()
 			
 			cierrePos = cierreTransitivo(data, listDFL3)
 			
 			if all(atr in cierrePos for atr in r.dataT):
 				m2.append(data)
-				#print("Es Llave candidata")
+				#print("Es Llave candidata: ", m2)
 			else:
 				t = threading.Thread(target = algoritmoClavesCandidatas, args = (r, listDFL3, data, v, m2))
 				t.start()
 				#m1.append(data)
-				#algoritmoClavesCandidatas(r, listDFL3, data, v,  m2)
+				algoritmoClavesCandidatas(r, listDFL3, data, v,  m2)
 				#m1.remove(data)
-	
+	return m2
 
 
 
