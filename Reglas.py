@@ -35,7 +35,7 @@ def matrizSinDuplicados(listMatrices):
 	for m in listMatrices:
 		if m not in listToReturn:
 			listToReturn.append(m)
-	
+
 	return listToReturn
 
 
@@ -214,9 +214,9 @@ def algoritmoClavesCandidatas(r, listDFL3, z, v, m2):
 				m2.append(data)
 				#print("Es Llave candidata: ", m2)
 			else:
-				#t = threading.Thread(target = algoritmoClavesCandidatas, args = (r, listDFL3, data, v, m2))
-				#t.start()
-				algoritmoClavesCandidatas(r, listDFL3, data, v,  m2)
+				t = threading.Thread(target = algoritmoClavesCandidatas, args = (r, listDFL3, data, v, m2))
+				t.start()
+				#algoritmoClavesCandidatas(r, listDFL3, data, v,  m2)
 
 
 
