@@ -15,7 +15,14 @@ def threadpool(f, executor = None):
     @wraps(f)
     def wrap(*args, **kwargs):
     	return (executor or _DEFAULT_POOL).submit(f, *args, **kwargs)
-        #return asyncio.wrap_future((executor or _DEFAULT_POOL).submit(f, *args, **kwargs))
+
+    return wrap
+
+
+def threadpool2(f, executor = None):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        return asyncio.wrap_future((executor or _DEFAULT_POOL).submit(f, *args, **kwargs))
 
     return wrap
 
@@ -268,9 +275,16 @@ def algoritmoClavesCandidatas2(r, listDFL3):
 	return m2
 
 
+def validate(r, listDFL3, m1, m2, pos):
+	cierrePos = cierreTransitivo(pos, listDFL3)
+	if all(atr in cierrePos for atr in r.dataT):
+		m2.append(pos)
+		m1.remove(pos)
+
 
 def recorrido(r, listDFL3, v, m1, m2):
 	for pos in m1.copy():
+		#validate(r, listDFL3, m1, m2, pos);
 		cierrePos = cierreTransitivo(pos, listDFL3)
 		if all(atr in cierrePos for atr in r.dataT):
 			m2.append(pos)
@@ -286,10 +300,10 @@ def poblarM1(v, m1, m2):
 	for m in m1.copy():
 		data = m
 		for pos in v:
+			newData = data + [pos]
+			newData.sort()
 			yaEsta = any(containsAll((data + [pos]), atr) for atr in m2)
-			if pos not in data and not yaEsta:
-				newData = data + [pos]
-				newData.sort()
+			if pos not in data and not yaEsta and newData not in m1:
 				m1.append(newData)
 				
 		m1.remove(data)

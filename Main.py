@@ -93,11 +93,22 @@ save_result(l3)
 i = time.time()
 resultThread = reglas.clavesCandidatas(r, l3)
 clavesCandidatas = resultThread.result()
-#resultThread = reglas.algoritmoClavesCandidatas2(r, l3)
-#clavesCandidatas = resultThread.result()
 time_option4 = time.time() - i
 
-print("Claves Candidatas: ", time_option4)
+print("Claves Candidatas Algoritmo 1: ", time_option4)
+print("Claves Obtenidas = ", clavesCandidatas)
+clavesCandidatas = reglas.matrizSinDuplicados(clavesCandidatas)
+clavesCandidatas = reglas.matrizSinReflexividad(clavesCandidatas)
+print("Claves sin Redun = ", clavesCandidatas)
+print()
+
+
+i = time.time()
+resultThread = reglas.algoritmoClavesCandidatas2(r, l3)
+clavesCandidatas = resultThread.result()
+time_option5 = time.time() - i
+
+print("Claves Candidatas Algoritmo 2: ", time_option5)
 print("Claves Obtenidas = ", clavesCandidatas)
 clavesCandidatas = reglas.matrizSinDuplicados(clavesCandidatas)
 clavesCandidatas = reglas.matrizSinReflexividad(clavesCandidatas)
