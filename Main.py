@@ -6,10 +6,6 @@ from DF import *
 import Reglas as reglas
 import json
 import time
-from multiprocessing.pool import ThreadPool
-from functools import wraps
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
 
 r = R()
 

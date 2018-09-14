@@ -7,8 +7,6 @@ import threading
 from functools import wraps
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import ProcessPoolExecutor
-from multiprocessing.pool import ThreadPool
 
 
 _DEFAULT_POOL = ThreadPoolExecutor(1)
