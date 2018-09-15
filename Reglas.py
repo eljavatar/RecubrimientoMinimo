@@ -262,7 +262,8 @@ def algoritmoClavesCandidatas2(r, listDFL3):
 		if atr not in zw:
 			zw.append(atr)
 	zw.sort()
-	# Conservamos cada posible clave en t, si no está en la lista de implicantes e implicados (z + w)
+	# Conservamos cada posible clave en t, si no está en la lista del
+	# cierre de implicantes e implicados (z* + w)
 	v = [posible for posible in r.dataT if posible not in zw]
 	#print("v = ", v)
 
