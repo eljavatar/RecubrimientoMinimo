@@ -189,7 +189,11 @@ def clavesCandidatas(r, listDFL3):
 	w = [impX for impX in r.dataT if impX not in implicantes]
 	#print("w = ", w)
 
-	zw = z + w
+	zw = cierreZ.copy()
+	for atr in w:
+		if atr not in zw:
+			zw.append(atr)
+	zw.sort()
 	# Conservamos cada posible clave en t, si no está en la lista de implicantes e implicados (z + w)
 	v = [posible for posible in r.dataT if posible not in zw]
 	#print("v = ", v)
