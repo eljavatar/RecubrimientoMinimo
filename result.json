@@ -5,36 +5,20 @@
             "impY": "c"
         },
         {
+            "impX": "c",
+            "impY": "e"
+        },
+        {
+            "impX": "c",
+            "impY": "b"
+        },
+        {
             "impX": "d",
             "impY": "e"
         },
         {
-            "impX": "d",
-            "impY": "f"
-        },
-        {
-            "impX": "b,e",
-            "impY": "c"
-        },
-        {
-            "impX": "b,c",
-            "impY": "d"
-        },
-        {
-            "impX": "c,f",
-            "impY": "d"
-        },
-        {
-            "impX": "c,d",
-            "impY": "b"
-        },
-        {
-            "impX": "c",
-            "impY": "a"
-        },
-        {
-            "impX": "c,e",
-            "impY": "f"
+            "impX": "a",
+            "impY": "e"
         }
     ]
 }

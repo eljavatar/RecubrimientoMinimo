@@ -9,7 +9,7 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
 
-_DEFAULT_POOL = ThreadPoolExecutor()
+_DEFAULT_POOL = ThreadPoolExecutor(5)
 
 def threadpool(f, executor = None):
     @wraps(f)
@@ -319,3 +319,66 @@ def poblarM1(v, m1, m2):
 		m1.remove(data)
 
 
+
+def estaEn2FN(r):
+	listAtrClaves = []
+	clavesConMasDeDosAtr = []
+	for key in r.clavesCandidatas:
+		if len(key) > 1:
+			clavesConMasDeDosAtr.append(key)
+		for atr in key:
+			if atr not in listAtrClaves:
+				listAtrClaves.append(atr)
+	listAtrClaves.sort()
+	#print(listAtrClaves)
+
+	# Atributos que no estan en ninguna clave candidata
+	listNoPrimos = [atr for atr in r.dataT if atr not in listAtrClaves]
+	#listNoprimos.sort()
+	#print(listNoPrimos)
+
+	for noPrimo in listNoPrimos:
+		for key in clavesConMasDeDosAtr:
+			for j in range((len(key) - 1), -1, -1):
+				keyTemp = key.copy()
+				keyTemp.remove(key[j])
+
+				cierre = cierreTransitivo(keyTemp, r.recubrimientoMinimo)
+				
+				if noPrimo not in cierre:
+					return False
+
+	return True
+
+
+def estaEn3FN(r, estaEn2FN):
+	if not estaEn2FN:
+		return False
+
+	listAtrClaves = []
+	for key in r.clavesCandidatas:
+		for atr in key:
+			if atr not in listAtrClaves:
+				listAtrClaves.append(atr)
+	listAtrClaves.sort()
+	#print(listAtrClaves)
+
+	# Atributos que no estan en ninguna clave candidata
+	listNoPrimos = [atr for atr in r.dataT if atr not in listAtrClaves]
+
+	for df in r.recubrimientoMinimo:
+		if df.implicante not in r.clavesCandidatas and df.implicado[0] not in listNoPrimos:
+			return False
+
+	return True
+
+
+def estaEnFNBC(r, estaEn3FN):
+	if not estaEn3FN:
+		return False
+
+	for df in r.recubrimientoMinimo:
+		if df.implicante not in r.clavesCandidatas:
+			return False
+
+	return True

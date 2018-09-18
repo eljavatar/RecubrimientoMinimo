@@ -53,63 +53,114 @@ def save_result(listDF):
 
 
 
-ruta = 'datos3.json'
-cargar_datos(ruta)
-print(r.dataT)
-print()
+def ejecutarProceso(ruta, changeListRecubrimiento = False, forceFNBC = False):
+	#ruta = 'datos2.json'
+	cargar_datos(ruta)
+	print("T = ", r.dataT)
+	print()
 
-i = time.time()
-l1 = reglas.dependenciasElementales(r.dependencias)
-time_option1 = time.time() - i
-print("Dependencias Elementales: ", time_option1)
-for df in l1:
-	print(df.implicante, ' -> ', df.implicado)
-print()
+	i = time.time()
+	l1 = reglas.dependenciasElementales(r.dependencias)
+	time_option1 = time.time() - i
+	print("Dependencias Elementales. Tiempo de ejecución: ", time_option1)
+	for df in l1:
+		print(df.implicante, ' -> ', df.implicado)
+	print()
 
-i = time.time()
-l2 = reglas.eliminarAtributosExtranos(l1)
-time_option2 = time.time() - i
-print("Eliminamos Atributos extraños: ", time_option2)
-for df in l2:
-	print(df.implicante, ' -> ', df.implicado)
-print()
+	i = time.time()
+	l2 = reglas.eliminarAtributosExtranos(l1)
+	time_option2 = time.time() - i
+	print("Eliminamos Atributos extraños. Tiempo de ejecución: ", time_option2)
+	for df in l2:
+		print(df.implicante, ' -> ', df.implicado)
+	print()
 
-i = time.time()
-l3 = reglas.eliminarDependenciasRedundantes(l2)
-time_option3 = time.time() - i
-print("Eliminamos Dependencias redundantes: ", time_option3)
-for df in l3:
-	print(df.implicante, ' -> ', df.implicado)
-print()
+	i = time.time()
+	l3 = reglas.eliminarDependenciasRedundantes(l2)
+	time_option3 = time.time() - i
+	print("Eliminamos Dependencias redundantes. Tiempo de ejecución: ", time_option3)
+	for df in l3:
+		print(df.implicante, ' -> ', df.implicado)
+	print()
+	r.recubrimientoMinimo = l3
 
-print("Tiempo total: ", (time_option1 + time_option2 + time_option3))
-print()
+	print("Tiempo total de ejecución: ", (time_option1 + time_option2 + time_option3))
+	print()
 
-print("¿Son equivalentes L3 y Lx?: ", reglas.validarConjuntosEquivalentes(l3, r.dfToValidate))
-print()
+	print("¿Son equivalentes L3 y Lx?: ", reglas.validarConjuntosEquivalentes(l3, r.dfToValidate))
+	print()
 
-save_result(l3)
+	save_result(l3)
 
-i = time.time()
-resultThread = reglas.clavesCandidatas(r, l3)
-clavesCandidatas = resultThread.result()
-time_option4 = time.time() - i
+	i = time.time()
+	resultThread = reglas.clavesCandidatas(r, l3)
+	clavesCandidatas = resultThread.result()
+	time_option4 = time.time() - i
 
-print("Claves Candidatas Algoritmo 1: ", time_option4)
-print("Claves Obtenidas = ", clavesCandidatas)
-clavesCandidatas = reglas.matrizSinDuplicados(clavesCandidatas)
-clavesCandidatas = reglas.matrizSinReflexividad(clavesCandidatas)
-print("Claves sin Redun = ", clavesCandidatas)
-print()
+	print("Claves Candidatas Algoritmo 1. Tiempo de ejecución: ", time_option4)
+	print("Claves Obtenidas = ", clavesCandidatas)
+	clavesCandidatas = reglas.matrizSinDuplicados(clavesCandidatas)
+	clavesCandidatas = reglas.matrizSinReflexividad(clavesCandidatas)
+	print("Claves sin Redun = ", clavesCandidatas)
+	print()
+	'''
+	i = time.time()
+	resultThread = reglas.algoritmoClavesCandidatas2(r, l3)
+	clavesCandidatas = resultThread.result()
+	time_option5 = time.time() - i
+
+	print("Claves Candidatas Algoritmo 2: ", time_option5)
+	print("Claves Obtenidas = ", clavesCandidatas)
+	clavesCandidatas = reglas.matrizSinDuplicados(clavesCandidatas)
+	clavesCandidatas = reglas.matrizSinReflexividad(clavesCandidatas)
+	print("Claves sin Redun = ", clavesCandidatas)
+	'''
+	r.clavesCandidatas = clavesCandidatas
+
+	estaEn2FN = reglas.estaEn2FN(r)
+	print("¿Está en 2FN?: ", estaEn2FN)
+
+	if changeListRecubrimiento:
+		listTemp = []
+		if not forceFNBC:
+			listTemp.append(DF(["c"], ["e"]))
+			listTemp.append(DF(["d"], ["e"]))
+			listTemp.append(DF(["a"], ["e"]))
+		listTemp.append(DF(["a", "b", "d"], ["c"]))
+		listTemp.append(DF(["a", "c", "d"], ["e"]))
+
+		r.recubrimientoMinimo = listTemp
+
+		print("Cambiamos el recubrimiento minimo para forzar a que pase la validación de la 3FN y/o FNBC")
+		for df in r.recubrimientoMinimo:
+			print(df.implicante, ' -> ', df.implicado)
+
+		print()
 
 
-i = time.time()
-resultThread = reglas.algoritmoClavesCandidatas2(r, l3)
-clavesCandidatas = resultThread.result()
-time_option5 = time.time() - i
+	estaEn3FN = reglas.estaEn3FN(r, estaEn2FN)
+	print("¿Está en 3FN?: ", estaEn3FN)
 
-print("Claves Candidatas Algoritmo 2: ", time_option5)
-print("Claves Obtenidas = ", clavesCandidatas)
-clavesCandidatas = reglas.matrizSinDuplicados(clavesCandidatas)
-clavesCandidatas = reglas.matrizSinReflexividad(clavesCandidatas)
-print("Claves sin Redun = ", clavesCandidatas)
+	estaEnFNBC = reglas.estaEnFNBC(r, estaEn3FN)
+	print("¿Está en FNBC?: ", estaEnFNBC)
+
+
+
+print("Caso de prueba 1\n")
+ejecutarProceso("datos.json")
+print("\n\n")
+
+print("Caso de prueba 2\n")
+ejecutarProceso("datos2.json")
+print("\n\n")
+
+print("Caso de prueba 3\n")
+ejecutarProceso("datos3.json")
+print("\n\n")
+
+print("Caso de prueba 4\n")
+ejecutarProceso("datos2.json", True)
+print("\n\n")
+
+print("Caso de prueba 5\n")
+ejecutarProceso("datos2.json", True, True)
