@@ -4,6 +4,7 @@
 from R import *
 from DF import *
 import Reglas as reglas
+import Utils as utils
 import json
 import time
 
@@ -55,7 +56,8 @@ def save_result(listDF):
 
 def ejecutarProceso(ruta, changeListRecubrimiento = False, forceFNBC = False):
 	#ruta = 'datos2.json'
-	cargar_datos(ruta)
+	#cargar_datos(ruta)
+	r = utils.cargarDatosAndReturnR(ruta)
 	print("T = ", r.dataT)
 	print()
 
