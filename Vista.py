@@ -48,9 +48,9 @@ def fillData():
 def loadFile():
 	try:
 		root.filename =  filedialog.askopenfilename(initialdir = "",title = "Select file",filetypes = (("JSON files","*.json"),("all files","*.*")))
+		#root.filename =  filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("JSON files","*.json"),("all files","*.*"))) # Disco C
 		if not messagebox.askyesno(title = "Mensaje de Confirmación", message = "Al cargar este archivo, se sobreescribirán las\nvariables de entrada del conjunto R(T, L)\n¿Está seguro de continuar?"):
 			return
-		#root.filename =  filedialog.askopenfilename(initialdir = "",title = "Select file",filetypes = (("JSON files","*.json"),("all files","*.*"))) # Disco C
 		pathFile.set(root.filename)
 		dataLoad = utils.cargarDatosAndReturnR(root.filename);
 		r.dataT = dataLoad.dataT.copy()
@@ -79,6 +79,7 @@ def cleanDependencias():
 	listDF.clear()
 	for i in tableDependencias.get_children():
 		tableDependencias.delete(i)
+	r.dfToValidate = []
 
 
 def calcularRecubrimientoMinimo():
@@ -101,7 +102,7 @@ def calcularRecubrimientoMinimo():
 
 def initForm():
 	root.title("Recubrimiento Mínimo")
-	root.resizable(True, True)
+	root.resizable(False, False)
 	#root.iconbitmap("ruta.ico")
 
 	
@@ -157,7 +158,7 @@ def initForm():
 
 	tableDependencias.configure(yscrollcommand = scrollbar_vertical.set)
 
-	buttonCleanDF = Button(frameDF, text = "Limpir Dependencias", font = textFont, command = cleanDependencias)
+	buttonCleanDF = Button(frameDF, text = "Limpiar Dependencias", font = textFont, command = cleanDependencias)
 	buttonCleanDF.grid(row = 1, column = 0, padx = 5, pady = 5)
 
 	

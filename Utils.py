@@ -33,6 +33,10 @@ def cargarDatosAndReturnR(ruta):
 		listDFToValidate.append(df)
 	
 	r.dataT = datos["R"]["T"]
+	for i in range(0, len(r.dataT)):
+		r.dataT[i] = r.dataT[i].strip()
+	r.dataT.sort()
+
 	r.dependencias = listDF
 	r.dfToValidate = listDFToValidate
 
