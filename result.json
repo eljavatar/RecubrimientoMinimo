@@ -1,24 +1,28 @@
 {
     "Lx": [
         {
-            "impX": "a",
-            "impY": "b"
+            "impX": "A",
+            "impY": "B"
         },
         {
-            "impX": "b",
-            "impY": "c"
+            "impX": "A",
+            "impY": "G"
         },
         {
-            "impX": "a",
-            "impY": "e"
+            "impX": "B",
+            "impY": "C"
         },
         {
-            "impX": "c",
-            "impY": "a"
+            "impX": "A",
+            "impY": "E"
         },
         {
-            "impX": "b",
-            "impY": "d"
+            "impX": "C",
+            "impY": "A"
+        },
+        {
+            "impX": "B",
+            "impY": "D"
         }
     ]
 }

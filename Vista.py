@@ -5,15 +5,20 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter import simpledialog
 from R import *
 from DF import *
 import Utils as utils
 import Controller as cont
 import traceback
+from random import randint
+import time
 
 
 r = R()
 listDF = []
+matrizControlDF = []
+listDFtoValidate = []
 
 root = Tk()
 frame = Frame(root)
@@ -26,7 +31,7 @@ frameRes.grid(row = 6, column = 1, padx = 5, pady = 5, columnspan = 5)
 frameRes.grid_columnconfigure(0, weight = 1)
 
 tableDependencias = ttk.Treeview(frameDF)
-textRes = Text(frameRes, width = 50, height = 16)
+textRes = Text(frameRes, width = 50, height = 22)
 
 textFont = ("Arial", 10)
 
@@ -40,8 +45,11 @@ resultado = ""
 def fillData():
 	dataT.set(",".join(r.dataT.copy()))
 	cleanDependencias()
+	#listDFtoValidate = r.dfToValidate.copy()
 	for df in r.dependencias:
-		tableDependencias.insert("", END, text = (",".join(df.implicante) + " -> " + ",".join(df.implicado)))
+		itemId = str(randint(1, 999999999) + (time.time() * randint(1, 9999)))
+		matrizControlDF.append([itemId, df])
+		tableDependencias.insert("", END, text = (",".join(df.implicante) + " -> " + ",".join(df.implicado)), iid = itemId)
 		listDF.append(df)
 
 
@@ -69,17 +77,61 @@ def addDependencia():
 		return
 
 	df = DF(utils.trimData(dfImplicante.get()), utils.trimData(dfImplicado.get()))
-	tableDependencias.insert("", END, text = (",".join(df.implicante) + " -> " + ",".join(df.implicado)))
+	if utils.containsAny(df.implicante, df.implicado):
+		messagebox.showerror("Mensaje de Error", "La dependencia que está intentando ingresar es Trivial (Puede\nser simplificada usando reflexividad) y sólo puede ingresar dependencias No Triviales")
+		return
+
+	if df in listDF:
+		messagebox.showerror("Mensaje de Error", "La dependencia que está intentando ingresar\nya ha sido ingresada previamente")
+		return
+
+	itemId = str(randint(1, 999999999) + (time.time() * randint(1, 9999)))
+	matrizControlDF.append([itemId, df])
+	tableDependencias.insert("", END, text = (",".join(df.implicante) + " -> " + ",".join(df.implicado)), iid = itemId)
 	dfImplicante.set("")
 	dfImplicado.set("")
 	listDF.append(df)
+
+
+def modifyDependencia():
+	itemId = tableDependencias.focus()
+	for i in range(len(matrizControlDF)):
+		if matrizControlDF[i][0] == itemId:
+			newImplicante = simpledialog.askstring("Implicante", "Ingrese el nuevo implicante", initialvalue = ",".join(matrizControlDF[i][1].implicante), parent = root)
+			newImplicado = simpledialog.askstring("Implicado", "Ingrese el nuevo implicado", initialvalue = ",".join(matrizControlDF[i][1].implicado), parent = root)
+
+			index = listDF.index(matrizControlDF[i][1])
+
+			if newImplicante is not None and len(newImplicante.strip()) > 0:
+				listDF[index].implicante = utils.trimData(newImplicado)
+				matrizControlDF[i][1].implicante = utils.trimData(newImplicante)
+
+			if newImplicado is not None and len(newImplicado.strip()) > 0:
+				listDF[index].implicado = utils.trimData(newImplicado)
+				matrizControlDF[i][1].implicado = utils.trimData(newImplicado)
+
+			tableDependencias.item(itemId, text = (",".join(listDF[index].implicante) + " -> " + ",".join(listDF[index].implicado)))
+			break
+
+
+def deleteDependencia():
+	itemId = tableDependencias.focus()
+	for i in range(len(matrizControlDF)):
+		if matrizControlDF[i][0] == itemId:
+			element = matrizControlDF[i]
+			listDF.remove(element[1])
+			tableDependencias.delete(itemId)
+			matrizControlDF.remove(element)
+			break
 
 
 def cleanDependencias():
 	listDF.clear()
 	for i in tableDependencias.get_children():
 		tableDependencias.delete(i)
-	r.dfToValidate = []
+	matrizControlDF.clear()
+	#listDFtoValidate.clear()
+	#r.dfToValidate = []
 
 
 def calcularRecubrimientoMinimo():
@@ -91,10 +143,11 @@ def calcularRecubrimientoMinimo():
 		messagebox.showerror("Mensaje de Error", "Debe ingresar un conjunto de dependencias (L)")
 		return
 
-	r.dataT = utils.trimData(dataT.get())
-	r.dependencias = listDF
+	r.dataT = utils.trimData(dataT.get().upper())
+	r.dependencias = listDF.copy()
 
 	resultado = cont.ejecutarProceso(r)
+	r.dfToValidate = []
 
 	textRes.delete('1.0', END)
 	textRes.insert(END, resultado)
@@ -103,7 +156,7 @@ def calcularRecubrimientoMinimo():
 def initForm():
 	root.title("Recubrimiento Mínimo")
 	root.resizable(False, False)
-	#root.iconbitmap("ruta.ico")
+	root.iconbitmap("logo.ico")
 
 	
 	frame.pack(fill = "x", expand = 1)
@@ -158,8 +211,14 @@ def initForm():
 
 	tableDependencias.configure(yscrollcommand = scrollbar_vertical.set)
 
+	buttonModifyDF = Button(frameDF, text = "Modificar Dependencia Seleccionada", font = textFont, command = modifyDependencia)
+	buttonModifyDF.grid(row = 1, column = 0, padx = 5, pady = 5, columnspan = 2)
+
+	buttonDeleteDF = Button(frameDF, text = "Eliminar Dependencia Seleccionada", font = textFont, command = deleteDependencia)
+	buttonDeleteDF.grid(row = 2, column = 0, padx = 5, pady = 5, columnspan = 2)
+
 	buttonCleanDF = Button(frameDF, text = "Limpiar Dependencias", font = textFont, command = cleanDependencias)
-	buttonCleanDF.grid(row = 1, column = 0, padx = 5, pady = 5)
+	buttonCleanDF.grid(row = 3, column = 0, padx = 5, pady = 5, columnspan = 2)
 
 	
 	textRes.grid(row = 0, column = 0, padx = 5, pady = 5)

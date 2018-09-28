@@ -1,15 +1,49 @@
 from R import *
 from DF import *
-#import Reglas as reglas
+import Reglas as reglas
 import json
 import time
 
+
+# Funcion para validar si todos los elementos de listB estan en listA
+def containsAll(listA, listB):
+	for b in listB:
+		if b not in listA:
+			return False
+	return True
+
+
+# Función para validar si al menos un elemento de listB está en listA
+def containsAny(listA, listB):
+	for b in listB:
+		if b in listA:
+			return True
+	return False
+
+
+def matrizSinReflexividad(listMatrices):
+	listFinal = listMatrices.copy()
+	for m in listFinal.copy():
+		for n in listFinal.copy():
+			if m != n and containsAll(m, n):
+				listFinal.remove(m)
+
+	return listFinal
+
+
+def matrizSinDuplicados(listMatrices):
+	listToReturn = []
+	for m in listMatrices:
+		if m not in listToReturn:
+			listToReturn.append(m)
+
+	return listToReturn
 
 # Funcion para eliminar espacios en blanco de los datos recibidos
 def trimData(dfStr):
 	array = dfStr.split(',')
 	for i in range(0, len(array)):
-		array[i] = array[i].strip()
+		array[i] = array[i].strip().upper()
 	array.sort()
 	return array
 
@@ -25,16 +59,20 @@ def cargarDatosAndReturnR(ruta):
 	listDF = []
 	for dependencia in datos["R"]["L"]:
 		df = DF(trimData(dependencia["impX"]), trimData(dependencia["impY"]))
+		if containsAny(df.implicante, df.implicado) or df in listDF:
+			continue
 		listDF.append(df)
 
 	listDFToValidate = []
 	for dependencia in datos["Lx"]:
 		df = DF(trimData(dependencia["impX"]), trimData(dependencia["impY"]))
+		if containsAny(df.implicante, df.implicado) or df in listDFToValidate:
+			continue
 		listDFToValidate.append(df)
 	
 	r.dataT = datos["R"]["T"]
 	for i in range(0, len(r.dataT)):
-		r.dataT[i] = r.dataT[i].strip()
+		r.dataT[i] = r.dataT[i].strip().upper()
 	r.dataT.sort()
 
 	r.dependencias = listDF
