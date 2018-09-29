@@ -31,7 +31,7 @@ frameRes.grid(row = 6, column = 1, padx = 5, pady = 5, columnspan = 5)
 frameRes.grid_columnconfigure(0, weight = 1)
 
 tableDependencias = ttk.Treeview(frameDF)
-textRes = Text(frameRes, width = 50, height = 22)
+textRes = Text(frameRes, width = 55, height = 22)
 
 textFont = ("Arial", 10)
 
@@ -169,10 +169,10 @@ def initForm():
 	separator1.grid(row = 1, column = 0, sticky="we", padx = 5, pady = 5, columnspan = 5)
 
 
-	entryFile = Entry(frame, font = textFont, textvariable = pathFile)
+	entryFile = Entry(frame, font = textFont, textvariable = pathFile, bg = "#FFEADC", state = "disabled")
 	entryFile.grid(row = 2, column = 0, padx = 5, pady = 5, columnspan = 4, sticky = W + E)
 
-	buttonLoadFile = Button(frame, text = "Cargar Archivo", font = textFont, command = loadFile)
+	buttonLoadFile = Button(frame, text = "Cargar Archivo", font = textFont, command = loadFile, bg = "#6DCCAC")
 	buttonLoadFile.grid(row = 2, column = 4, padx = 5, pady = 5)
 
 	separator2 = ttk.Separator(frame, orient = "horizontal")
@@ -182,24 +182,24 @@ def initForm():
 	labelT = Label(frame, text = "Conjunto de datos (T):", font = textFont)
 	labelT.grid(row = 4, column = 0, sticky = "e", padx = 5, pady = 5)
 
-	entryT = Entry(frame, font = textFont, textvariable = dataT)
+	entryT = Entry(frame, font = textFont, textvariable = dataT, bg = "#FFEADC")
 	entryT.grid(row = 4, column = 1, padx = 5, pady = 5, columnspan = 4, sticky='we')
 
 
 	labelL = Label(frame, text = "Dependencia Funcional (L):", font = textFont)
 	labelL.grid(row = 5, column = 0, sticky = "e", padx = 5, pady = 5)
 
-	entryDFx = Entry(frame, font = textFont, textvariable = dfImplicante)
+	entryDFx = Entry(frame, font = textFont, textvariable = dfImplicante, bg = "#FFEADC")
 	entryDFx.grid(row = 5, column = 1, padx = 5, pady = 5)
 
 	labelL = Label(frame, text = "->")
 	labelL.grid(row = 5, column = 2, padx = 5, pady = 5)
 
-	entryDFy = Entry(frame, font = textFont, textvariable = dfImplicado)
+	entryDFy = Entry(frame, font = textFont, textvariable = dfImplicado, bg = "#FFEADC")
 	entryDFy.grid(row = 5, column = 3, padx = 5, pady = 5)
 
 
-	buttonAddDF = Button(frame, text = "Agregar DF", font = textFont, command = addDependencia)
+	buttonAddDF = Button(frame, text = "Agregar DF", font = textFont, command = addDependencia, bg = "#6DCCAC")
 	buttonAddDF.grid(row = 5, column = 4, padx = 5, pady = 5)
 
 	
@@ -211,13 +211,13 @@ def initForm():
 
 	tableDependencias.configure(yscrollcommand = scrollbar_vertical.set)
 
-	buttonModifyDF = Button(frameDF, text = "Modificar Dependencia Seleccionada", font = textFont, command = modifyDependencia)
+	buttonModifyDF = Button(frameDF, text = "Modificar Dependencia Seleccionada", font = textFont, command = modifyDependencia, bg = "#9BB9FF")
 	buttonModifyDF.grid(row = 1, column = 0, padx = 5, pady = 5, columnspan = 2)
 
-	buttonDeleteDF = Button(frameDF, text = "Eliminar Dependencia Seleccionada", font = textFont, command = deleteDependencia)
+	buttonDeleteDF = Button(frameDF, text = "Eliminar Dependencia Seleccionada", font = textFont, command = deleteDependencia, bg = "#FFAD9B")
 	buttonDeleteDF.grid(row = 2, column = 0, padx = 5, pady = 5, columnspan = 2)
 
-	buttonCleanDF = Button(frameDF, text = "Limpiar Dependencias", font = textFont, command = cleanDependencias)
+	buttonCleanDF = Button(frameDF, text = "Limpiar Dependencias", font = textFont, command = cleanDependencias, bg = "#BCBCBC")
 	buttonCleanDF.grid(row = 3, column = 0, padx = 5, pady = 5, columnspan = 2)
 
 	
@@ -229,7 +229,7 @@ def initForm():
 	textRes.config(yscrollcommand = scrollVertRes.set)
 
 
-	buttonCalcular = Button(root, text = "Calcular Recubrimiento Mínimo", font = textFont, command = calcularRecubrimientoMinimo)
+	buttonCalcular = Button(root, text = "Calcular Recubrimiento Mínimo", font = textFont, command = calcularRecubrimientoMinimo, bg = "#6DCC84")
 	buttonCalcular.pack(padx = 5, pady = 5)
 
 	root.mainloop()
